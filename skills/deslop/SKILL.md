@@ -114,3 +114,7 @@ Before returning the text, silently check, and fix what fails:
 - **Naturalness** — would a competent person here actually choose these words? If not, simplify.
 
 The target is a text that feels chosen rather than completed.
+
+## PROVENANCE
+
+The rules above come from a review of human-vs-AI writing research, not from testing `deslop`'s own output — no A/B evaluation has been run. Three load-bearing findings: AI generation leaves a stylometric footprint that AI editing mostly doesn't (why EDIT MODE preserves rather than regenerates); narrative and structural features separate human from AI writing far more than surface slop does (why structure gets fixed before sentence-level polish); and individual "AI words" fall in and out of fashion once flagged, while their fit to a given sentence doesn't (why there's no static blacklist). Full citations: README.md, "Where the design comes from."

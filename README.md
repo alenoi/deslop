@@ -174,6 +174,110 @@ choices is exotic. Stated together, they're the actual shape of the tool,
 and worth being specific about instead of claiming the field didn't already
 exist.
 
+## Where the design comes from
+
+The specific rules — EDIT MODE by default, structure fixed before surface
+polish, no word blacklist — trace back to a review of the human-vs-AI
+writing research literature, done before this skill was written, not to
+testing the skill's own output. No A/B evaluation of `deslop` has been run.
+This section says where the design came from; it says nothing about whether
+it works.
+
+**EDIT MODE as the default, preserving the draft instead of regenerating
+it.** AI generation leaves a consistent stylometric footprint; AI editing of
+existing text mostly doesn't reproduce it (Shan, Lee & Hao, "AI Writers Have
+a Consistent Stylometric Footprint, but AI Editors Do Not," arXiv:2608.27855).
+A study of human-AI co-writing found the matching asymmetry from the other
+side: participants' self-written portions didn't homogenize the way their
+AI-assisted portions did (Padmakumar & He, ICLR 2024, arXiv:2309.05196).
+Together, that's why local edit beats paragraph rewrite beats full rewrite,
+in that order.
+
+**Structure gets fixed before sentence-level polish.** The largest
+human-vs-AI writing study run so far — 10,272 prompts, 61,608 stories, five
+LLMs (Russell, Rajendhran, Pham, Iyyer & Wieting, "StoryScope,"
+arXiv:2604.03136) — found narrative and structural features alone reach
+93.2% macro-F1 at telling human writing from AI. Stripping surface slop
+(clichés, redundant exposition, purple prose) moved that number only from
+95.5% to 93.9%. Most of what separates AI writing from human writing is
+structural, not lexical — the single finding behind putting structure ahead
+of surface polish in the skill's priority order.
+
+**No "use rarer words."** StoryScope's own rarity measure isn't about
+vocabulary — it's distance to a story's 25 nearest neighbors in
+narrative-feature space, and human stories average further out than AI
+stories (0.71 vs 0.49). Read as being about vocabulary, that finding invites
+exactly the wrong fix. Two other results close the door on it directly:
+GPT-4.5 produced *higher* lexical diversity than the other models tested
+while reading as the *least* human-like of them (Kendro, Maloney & Jarvis,
+International Journal of Applied Linguistics, 2026, arXiv:2508.00086), and
+Shan, Lee & Hao write plainly that "the lexical diversity of our
+AI-generated documents is two standard deviations above that of our
+human-written documents" — above, not below. Rarer vocabulary reads as more
+machine-like, not less.
+
+**No static AI-word blacklist; learning restricted to multi-word frames.**
+"Delve" dropped in academic writing once it became a recognized AI tell
+(Geng & Trotta, ACL 2025 Findings, arXiv:2502.09606) — a word's status as a
+marker is unstable in a way its fit to a given sentence isn't. That's why
+`transition_overuse` and `lexical_candidates` stay frozen, hand-curated
+lists whose hits are candidates rather than verdicts, and why the learning
+loop mines only multi-word frames (3-8 words), never single words.
+
+**The analyzer's seven categories, and cutting over adding.** Both trace to
+one source: 18 professional writers making 8,035 fine-grained edits to
+1,057 LLM-generated paragraphs, under a seven-category taxonomy — cliché,
+redundant exposition, purple prose, poor sentence structure, lack of
+specificity, awkward phrasing, tense inconsistency (Chakrabarty, Laban & Wu,
+the LAMP corpus, arXiv:2409.14509). `analyze.mjs`'s categories and the
+skill's edit checks map onto that taxonomy directly. The same paper found
+those edits split 74% replacements, 18% deletions, 8% insertions — read here
+as overwriting being the bigger problem than underwriting, which is this
+project's interpretation of that ratio, not a claim the paper makes. It's
+why the skill cuts and replaces before it embellishes.
+
+**The voice contract and epistemic-fidelity rules.** A three-experiment
+study across 2,939 writers and 11,091 readers found AI assistance made the
+same authors read as more competent, more positive, and more decidedly
+opinionated than they were, and shifted what readers assumed about the
+author (Röttger, Hackenburg, Kirk & Summerfield, arXiv:2604.22503) — framed
+by the authors as an objectionable distortion of the writer's actual
+persona. The rule against ever making a writer sound more confident,
+positive, diplomatic, or polished than they were is a direct response.
+
+**Not drifting toward "professional, positive, inspirational."** A
+comparison of human- and AI-generated Portuguese text found the AI output
+(GPT-4o, Mistral Large, Llama 3.3) consistently more formal, structured,
+positive, and motivating than the human baseline, which varied more and
+carried more negative emotion (Rodrigues, Sturm & Pinheiro, iScience
+29(3):114976, 2026, DOI 10.1016/j.isci.2026.114976). That's the specific
+drift the skill's voice contract names and instructs against.
+
+**Writing natively in the target language instead of transplanting English
+habits.** A CHI 2025 study of 118 participants found GPT-4o's autocomplete
+pulled Indian writers' English toward Western rhetorical style (Agarwal,
+Naaman & Vashistha, arXiv:2409.11360). That's why `references/hungarian.md`
+exists — but the content of that file isn't itself research-derived. The
+source review found no strong Hungarian-specific controlled human-vs-AI
+evidence; what's in `hungarian.md` is editing heuristics, not findings.
+
+**Why the skill isn't validated against AI detectors or "does this feel
+human" ratings.** In an unrelated art-perception study, identical
+AI-generated images were rated more favorably when participants believed
+they were human-made (Bellaiche et al., *Cognitive Research: Principles and
+Implications*, 2023, DOI 10.1186/s41235-023-00499-6). It isn't a writing
+study, and it's cited only for the mechanism: a belief about origin moves
+"does this feel human" independent of the artifact. Testing `deslop`
+against a detector or a perceived-humanness rating would partly be testing
+that bias, not the writing.
+
+Two honesty notes on top of the above: StoryScope's percentages are
+fiction-specific — a corpus of short stories, not business or analytical
+prose — so what transfers is the general mechanism (LLMs converge on
+over-explicit, over-linear, over-closed choices), not the 93.2% or
+95.5%/93.9% figures themselves. And none of this is a claim of novelty for
+the skill — see the section above.
+
 ## Installation
 
 As a marketplace plugin:
