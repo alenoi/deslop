@@ -193,11 +193,11 @@ AI-assisted portions did (Padmakumar & He, ICLR 2024, arXiv:2309.05196).
 Together, that's why local edit beats paragraph rewrite beats full rewrite,
 in that order.
 
-**Structure gets fixed before sentence-level polish.** The largest
-human-vs-AI writing study run so far — 10,272 prompts, 61,608 stories, five
-LLMs (Russell, Rajendhran, Pham, Iyyer & Wieting, "StoryScope,"
-arXiv:2604.03136) — found narrative and structural features alone reach
-93.2% macro-F1 at telling human writing from AI. Stripping surface slop
+**Structure gets fixed before sentence-level polish.** A parallel corpus of
+10,272 writing prompts, each answered by a human author and five LLMs for
+61,608 stories in total (Russell, Rajendhran, Pham, Iyyer & Wieting,
+"StoryScope," arXiv:2604.03136), found narrative and structural features
+alone reach 93.2% macro-F1 at telling human writing from AI. Stripping surface slop
 (clichés, redundant exposition, purple prose) moved that number only from
 95.5% to 93.9%. Most of what separates AI writing from human writing is
 structural, not lexical — the single finding behind putting structure ahead
