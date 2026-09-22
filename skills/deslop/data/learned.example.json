@@ -1,0 +1,20 @@
+{
+  "_comment": "Shape of data/learned.json, which scripts/promote.mjs --apply writes and this repo does not track (see .gitignore): promoted entries carry example snippets pulled from the real text they were mined from, so the file is kept out of a public repo by design. Its absence is the normal state of a fresh clone — analyze.mjs treats a missing learned.json as an empty list, silently. Copy this file to data/learned.json only to hand-seed learned state for testing; normally promote.mjs creates and grows it.",
+  "cliche_filler": {
+    "entries": [
+      {
+        "phrase": "unlock seamless value",
+        "source": "learned",
+        "confirmations": 3,
+        "firstSeen": "2026-09-10",
+        "promotedOn": "2026-09-22",
+        "examples": [
+          "...our platform leverages cutting-edge technology to unlock seamless value for every team..."
+        ]
+      }
+    ]
+  },
+  "forced_closure": {
+    "entries": []
+  }
+}

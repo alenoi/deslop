@@ -1,0 +1,333 @@
+{
+  "_comment": "Phrase/word lists for analyze.mjs. cliche_filler and forced_closure are learnable (grown by learn.mjs + promote.mjs, gated review, see data/candidates.json). transition_overuse and lexical_candidates are frozen/hand-curated — tooling must refuse to write to them (LEXICAL POLICY in SKILL.md: no auto-grown single-word blacklist).",
+  "cliche_filler": {
+    "frozen": false,
+    "entries": [
+      {
+        "phrase": "it is important to note that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "it is worth mentioning that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "it is worth noting that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "it should be noted that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "in today's fast-paced world",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "in today's digital age",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "in this day and age",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "at the end of the day",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "when it comes to",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "needless to say",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "it goes without saying",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "without a doubt",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "first and foremost",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "last but not least",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "in conclusion",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "in summary",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "to sum up",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "all things considered",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "fontos megjegyezni, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "fontos kiemelni, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "érdemes kiemelni, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "érdemes megjegyezni, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "nem szabad elfelejteni, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "összességében elmondható",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "összegzésként elmondható",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "kulcsfontosságú szerepet játszik",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "napjaink rohanó világában",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "a mai rohanó világban",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "regex": "nem csupán\\b[^.!?…]{0,80}\\bhanem\\b",
+        "note": "nem csupán..., hanem... frame",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      }
+    ]
+  },
+  "forced_closure": {
+    "frozen": false,
+    "entries": [
+      {
+        "phrase": "this highlights the importance of",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "this serves as a reminder that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "this underscores the need for",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "ultimately, this shows that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "the key takeaway is",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "this demonstrates the importance of",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "this reinforces the idea that",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "ez rávilágít arra, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "mindez azt mutatja, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "ez is jól mutatja, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "mindez alátámasztja, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      },
+      {
+        "phrase": "ez is alátámasztja, hogy",
+        "source": "seed",
+        "confirmations": 0,
+        "firstSeen": "2026-09-22"
+      }
+    ]
+  },
+  "transition_overuse": {
+    "frozen": true,
+    "entries": [
+      "furthermore",
+      "moreover",
+      "however",
+      "additionally",
+      "consequently",
+      "in contrast",
+      "on the other hand",
+      "nevertheless",
+      "in addition",
+      "továbbá",
+      "ugyanakkor",
+      "azonban",
+      "mindazonáltal",
+      "ennek ellenére",
+      "emellett"
+    ]
+  },
+  "lexical_candidates": {
+    "frozen": true,
+    "entries": [
+      "delve",
+      "boast",
+      "underscores",
+      "underscored",
+      "underscoring",
+      "tapestry",
+      "testament",
+      "robust",
+      "leverage",
+      "leveraging",
+      "leveraged",
+      "utilize",
+      "utilizes",
+      "utilizing",
+      "utilized",
+      "foster",
+      "fosters",
+      "fostered",
+      "fostering",
+      "navigate",
+      "navigating",
+      "navigated",
+      "realm",
+      "landscape",
+      "myriad",
+      "plethora",
+      "unlock",
+      "unlocks",
+      "unlocking",
+      "unlocked",
+      "unleash",
+      "unleashes",
+      "unleashing",
+      "unleashed",
+      "seamless",
+      "seamlessly",
+      "cutting-edge",
+      "cutting edge",
+      "game-changer",
+      "game changer",
+      "elevate",
+      "elevates",
+      "elevated",
+      "elevating",
+      "kulcsfontosságú",
+      "sokrétű",
+      "kiemelkedő jelentőségű",
+      "átfogó"
+    ]
+  }
+}

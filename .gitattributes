@@ -1,0 +1,2 @@
+# Markdown and JSON stay LF in the repository, whatever the checkout platform.
+* text=auto eol=lf

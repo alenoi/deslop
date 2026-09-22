@@ -1,0 +1,16 @@
+# Harness working state — never part of the plugin itself.
+.claude/
+.claude/worktrees/
+
+# Learned/staged state, not seed data. Promoted phrase examples and mined
+# candidates embed snippets of whatever real text was edited through the
+# skill — never something this public repo should carry. Their absence is
+# the normal state of a fresh clone; see data/learned.example.json for the
+# shape.
+skills/deslop/data/learned.json
+skills/deslop/data/candidates.json
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store

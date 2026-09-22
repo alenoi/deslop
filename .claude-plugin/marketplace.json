@@ -1,0 +1,14 @@
+{
+  "name": "deslop-marketplace",
+  "owner": {
+    "name": "alenoi",
+    "email": "67100159+alenoi@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "deslop",
+      "source": "./",
+      "description": "Rewrites or drafts text so it reads as a specific human making specific choices, instead of generic AI output — preserves the writer's actual intent, stance, certainty, and voice rather than adding stereotypical \"human\" quirks, typos, or randomness meant to evade AI detectors. Runs a bundled mechanical analyzer (cliché/filler frames, forced closure, transition overuse, sentence-length monotony, paragraph-opener repetition, a passive-voice heuristic, generic-AI vocabulary) that reports candidates for judgment, never a verdict, plus a gated learning loop that mines multi-word frames from accepted edits into a review queue."
+    }
+  ]
+}
