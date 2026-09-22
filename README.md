@@ -186,17 +186,17 @@ it works.
 **EDIT MODE as the default, preserving the draft instead of regenerating
 it.** AI generation leaves a consistent stylometric footprint; AI editing of
 existing text mostly doesn't reproduce it (Shan, Lee & Hao, "AI Writers Have
-a Consistent Stylometric Footprint, but AI Editors Do Not," arXiv:2608.27855).
+a Consistent Stylometric Footprint, but AI Editors Do Not," [arXiv:2608.27855](https://arxiv.org/abs/2608.27855)).
 A study of human-AI co-writing found the matching asymmetry from the other
 side: participants' self-written portions didn't homogenize the way their
-AI-assisted portions did (Padmakumar & He, ICLR 2024, arXiv:2309.05196).
+AI-assisted portions did (Padmakumar & He, ICLR 2024, [arXiv:2309.05196](https://arxiv.org/abs/2309.05196)).
 Together, that's why local edit beats paragraph rewrite beats full rewrite,
 in that order.
 
 **Structure gets fixed before sentence-level polish.** A parallel corpus of
 10,272 writing prompts, each answered by a human author and five LLMs for
 61,608 stories in total (Russell, Rajendhran, Pham, Iyyer & Wieting,
-"StoryScope," arXiv:2604.03136), found narrative and structural features
+"StoryScope," [arXiv:2604.03136](https://arxiv.org/abs/2604.03136)), found narrative and structural features
 alone reach 93.2% macro-F1 at telling human writing from AI. Stripping surface slop
 (clichés, redundant exposition, purple prose) moved that number only from
 95.5% to 93.9%. Most of what separates AI writing from human writing is
@@ -210,7 +210,7 @@ stories (0.71 vs 0.49). Read as being about vocabulary, that finding invites
 exactly the wrong fix. Two other results close the door on it directly:
 GPT-4.5 produced *higher* lexical diversity than the other models tested
 while reading as the *least* human-like of them (Kendro, Maloney & Jarvis,
-International Journal of Applied Linguistics, 2026, arXiv:2508.00086), and
+International Journal of Applied Linguistics, 2026, [arXiv:2508.00086](https://arxiv.org/abs/2508.00086)), and
 Shan, Lee & Hao write plainly that "the lexical diversity of our
 AI-generated documents is two standard deviations above that of our
 human-written documents" — above, not below. Rarer vocabulary reads as more
@@ -218,7 +218,7 @@ machine-like, not less.
 
 **No static AI-word blacklist; learning restricted to multi-word frames.**
 "Delve" dropped in academic writing once it became a recognized AI tell
-(Geng & Trotta, ACL 2025 Findings, arXiv:2502.09606) — a word's status as a
+(Geng & Trotta, ACL 2025 Findings, [arXiv:2502.09606](https://arxiv.org/abs/2502.09606)) — a word's status as a
 marker is unstable in a way its fit to a given sentence isn't. That's why
 `transition_overuse` and `lexical_candidates` stay frozen, hand-curated
 lists whose hits are candidates rather than verdicts, and why the learning
@@ -229,7 +229,7 @@ one source: 18 professional writers making 8,035 fine-grained edits to
 1,057 LLM-generated paragraphs, under a seven-category taxonomy — cliché,
 redundant exposition, purple prose, poor sentence structure, lack of
 specificity, awkward phrasing, tense inconsistency (Chakrabarty, Laban & Wu,
-the LAMP corpus, arXiv:2409.14509). `analyze.mjs`'s categories and the
+the LAMP corpus, [arXiv:2409.14509](https://arxiv.org/abs/2409.14509)). `analyze.mjs`'s categories and the
 skill's edit checks map onto that taxonomy directly. The same paper found
 those edits split 74% replacements, 18% deletions, 8% insertions — read here
 as overwriting being the bigger problem than underwriting, which is this
@@ -240,7 +240,7 @@ why the skill cuts and replaces before it embellishes.
 study across 2,939 writers and 11,091 readers found AI assistance made the
 same authors read as more competent, more positive, and more decidedly
 opinionated than they were, and shifted what readers assumed about the
-author (Röttger, Hackenburg, Kirk & Summerfield, arXiv:2604.22503) — framed
+author (Röttger, Hackenburg, Kirk & Summerfield, [arXiv:2604.22503](https://arxiv.org/abs/2604.22503)) — framed
 by the authors as an objectionable distortion of the writer's actual
 persona. The rule against ever making a writer sound more confident,
 positive, diplomatic, or polished than they were is a direct response.
@@ -250,13 +250,13 @@ comparison of human- and AI-generated Portuguese text found the AI output
 (GPT-4o, Mistral Large, Llama 3.3) consistently more formal, structured,
 positive, and motivating than the human baseline, which varied more and
 carried more negative emotion (Rodrigues, Sturm & Pinheiro, iScience
-29(3):114976, 2026, DOI 10.1016/j.isci.2026.114976). That's the specific
+29(3):114976, 2026, [DOI 10.1016/j.isci.2026.114976](https://doi.org/10.1016/j.isci.2026.114976)). That's the specific
 drift the skill's voice contract names and instructs against.
 
 **Writing natively in the target language instead of transplanting English
 habits.** A CHI 2025 study of 118 participants found GPT-4o's autocomplete
 pulled Indian writers' English toward Western rhetorical style (Agarwal,
-Naaman & Vashistha, arXiv:2409.11360). That's why `references/hungarian.md`
+Naaman & Vashistha, [arXiv:2409.11360](https://arxiv.org/abs/2409.11360)). That's why `references/hungarian.md`
 exists — but the content of that file isn't itself research-derived. The
 source review found no strong Hungarian-specific controlled human-vs-AI
 evidence; what's in `hungarian.md` is editing heuristics, not findings.
@@ -265,7 +265,7 @@ evidence; what's in `hungarian.md` is editing heuristics, not findings.
 human" ratings.** In an unrelated art-perception study, identical
 AI-generated images were rated more favorably when participants believed
 they were human-made (Bellaiche et al., *Cognitive Research: Principles and
-Implications*, 2023, DOI 10.1186/s41235-023-00499-6). It isn't a writing
+Implications*, 2023, [DOI 10.1186/s41235-023-00499-6](https://doi.org/10.1186/s41235-023-00499-6)). It isn't a writing
 study, and it's cited only for the mechanism: a belief about origin moves
 "does this feel human" independent of the artifact. Testing `deslop`
 against a detector or a perceived-humanness rating would partly be testing
