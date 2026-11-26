@@ -70,6 +70,39 @@ the correct choice because the actor doesn't matter to the sentence. Reading
 reproduces the exact over-correction the skill exists to avoid. It's a scan
 for candidates, not a linter with a fix mode.
 
+## The STE register
+
+For internal technical English (tickets, commits, PRs, docs, agent prompts,
+memory files), or when the user asks for it, the skill switches to a
+register based on ASD-STE100 (Simplified Technical English): procedural
+sentences of 20 words or fewer, descriptive sentences of 25 or fewer, the
+imperative and the active voice, one instruction per sentence, one word per
+concept. Where STE conflicts with a deslop rule, STE wins: a repeated term
+or a run of short sentences is a target, not a defect. The voice contract
+narrows to keeping the meaning, the certainty and the terms. Hungarian
+user-facing text gets a looser level (about 50%): the same structure rules
+without the word-level ones. `skills/deslop/references/ste.md` has the
+rules.
+
+```
+node skills/deslop/scripts/analyze.mjs --ste --json path/to/draft.md
+```
+
+`--ste` adds one category, `ste_sentence_length`. It flags a sentence over 20
+words if it looks like an instruction (the first word is not a determiner,
+pronoun, conjunction, preposition or auxiliary, and does not end in -s,
+-ed or -ing), and any other sentence over 25. Code spans, paths,
+identifiers and flags do not count. Hungarian sentences get the 25-word
+limit only. Without `--ste` the output is unchanged. There is no
+noun-cluster check: it needs a part-of-speech tagger, and a regex gives too
+many false hits.
+
+The ASD-STE100 standard and its approved-word dictionary are copyrighted and
+are not included. The reference file is a short summary in its own words, so
+`deslop` does not check STE conformance in the formal sense. STE support is
+also not empirically validated: like the rest of the skill, it is a design
+choice, not a measured result.
+
 ## The learning loop
 
 Two of the seven lists — `cliche_filler` and `forced_closure` — are
@@ -160,7 +193,7 @@ them optimize for evading a detector — which is a different goal from
 writing well, and often actively opposed to it. `deslop` doesn't do that.
 It has no detector-evasion logic, no perplexity or burstiness maximization,
 no injected typos, no banned-word list enforced by find-and-replace. Its
-frontmatter says plainly not to imitate stereotypical human mistakes or add
+SKILL.md says plainly not to imitate stereotypical human mistakes or add
 randomness for its own sake.
 
 What it does instead, concretely: it reports candidates for a human (or the
@@ -294,25 +327,29 @@ directory contains `SKILL.md` directly.
 
 ## Reference files
 
-`SKILL.md` points at two on-demand reference files, read only when they
+`SKILL.md` points at three on-demand reference files, read only when they
 apply:
 
 - `skills/deslop/references/genre-adaptation.md` — guidance for
   technical/academic/fiction pieces or unclear genre expectations.
 - `skills/deslop/references/hungarian.md` — Hungarian-specific phrasing and
   the Hungarian entries in the frozen and learnable lists.
+- `skills/deslop/references/ste.md` — the STE register: rules, the two
+  strictness levels, and how STE overrides conflicting deslop rules.
 
 ## Script reference
 
 All three scripts are zero-dependency Node 16+, live under
 `skills/deslop/scripts/`, and support `-h`/`--help`.
 
-**`analyze.mjs [--json] [<file>]`** — scans a draft, read from the file
-argument or stdin. Exit 2 on a usage or read error; exit 0 otherwise — there
-is no "fail" exit, since the script only reports.
+**`analyze.mjs [--json] [--ste] [<file>]`** — scans a draft, read from the
+file argument or stdin. `--ste` adds the `ste_sentence_length` check. Exit 2
+on a usage or read error; exit 0 otherwise — there is no "fail" exit, since
+the script only reports.
 
 ```
 node analyze.mjs draft.md
+node analyze.mjs --ste draft.md
 node analyze.mjs --json draft.md > report.json
 cat draft.md | node analyze.mjs --json
 ```
