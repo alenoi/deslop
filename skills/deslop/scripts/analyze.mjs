@@ -10,15 +10,20 @@
 // judgment on what each category of hit means and whether it's worth
 // touching. A static blacklist match is a candidate, not a verdict.
 //
-//   node analyze.mjs [--json] <file>
+//   node analyze.mjs [--json] [--ste] <file>
 //   cat draft.md | node analyze.mjs --json
 //   node analyze.mjs --help
+//
+// --ste adds one category, ste_sentence_length (see the STE section below),
+// for text in the Simplified Technical English register. Without --ste the
+// output is unchanged.
 //
 // exit codes: 0 ran fine, 2 usage or read error. There is no "fail" exit —
 // this script only reports, it never judges the draft as bad.
 //
 // Examples:
 //   node analyze.mjs draft.md
+//   node analyze.mjs --ste draft.md
 //   node analyze.mjs --json draft.md > report.json
 //   pbpaste | node analyze.mjs --json
 //   type draft.md | node analyze.mjs            (Windows)
@@ -32,7 +37,7 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PHRASES_PATH = join(SCRIPT_DIR, "..", "data", "phrases.json");
 const LEARNED_PATH = join(SCRIPT_DIR, "..", "data", "learned.json");
 
-const HELP = `usage: analyze.mjs [--json] [<file>]
+const HELP = `usage: analyze.mjs [--json] [--ste] [<file>]
 
 Scan a text draft for mechanical AI-tell candidates: cliche/filler frames,
 forced-closure frames, transition overuse, sentence-length monotony,
@@ -44,6 +49,12 @@ edits the draft and never decides a hit is wrong. A flag is a candidate for
 judgment, not an instruction.
 
   --json      full structured report (default: short human summary)
+  --ste       also check sentence length against the STE limits (category
+              ste_sentence_length): 20 words for a sentence that looks like
+              an instruction, 25 for any other sentence. Code spans, paths,
+              identifiers and --flags do not count. Hungarian sentences
+              always get 25. There is no noun-cluster check: it needs a
+              part-of-speech tagger, and a regex gives too many false hits.
   -h, --help  this text
 
 exit codes: 0 ran fine, 2 usage or read error.`;
@@ -55,9 +66,11 @@ const MAX_EXAMPLES = 5;
 const args = process.argv.slice(2);
 handleHelp(args, HELP);
 let asJson = false;
+let steMode = false;
 const positional = [];
 for (const arg of args) {
   if (arg === "--json") { asJson = true; continue; }
+  if (arg === "--ste") { steMode = true; continue; }
   if (arg.startsWith("-") && arg !== "-") {
     console.error("analyze: unknown option " + arg);
     console.error("run analyze.mjs --help for usage");
@@ -391,6 +404,135 @@ function scanPassiveVoice() {
 
 const PASSIVE_VOICE_HEURISTIC = scanPassiveVoice();
 
+// ------------------------------------------- STE sentence length (--ste) ----
+
+// Limits from the STE register (see references/ste.md).
+const STE_LIMIT_IMPERATIVE = 20;
+const STE_LIMIT_DESCRIPTIVE = 25;
+
+// A sentence "looks imperative" when its first word is not on this list and
+// does not look like a third-person verb (-s), a participle (-ed) or a gerund
+// (-ing). The list holds determiners, pronouns, conjunctions, prepositions and
+// auxiliaries that open descriptive sentences. This is a guess: a sentence
+// that opens with a noun gets the stricter 20-word limit, so it can over-flag.
+const NON_IMPERATIVE_STARTERS = new Set([
+  "the", "a", "an", "this", "that", "these", "those", "my", "your", "our",
+  "their", "its", "his", "her", "some", "any", "each", "every", "no", "all",
+  "both", "many", "most", "other", "another", "i", "you", "he", "she", "it",
+  "we", "they", "there", "here", "who", "which", "what", "whom", "whose",
+  "and", "but", "or", "so", "because", "although", "while", "whereas", "if",
+  "when", "whenever", "unless", "until", "before", "after", "since", "as",
+  "for", "with", "without", "in", "on", "at", "by", "from", "to", "of", "into",
+  "onto", "over", "under", "between", "about", "during", "through", "not",
+  "also", "then", "thus", "however", "therefore", "once", "where", "how",
+  "why", "is", "are", "was", "were", "does", "has", "have", "can", "will",
+  "would", "should", "could", "may", "might", "must",
+]);
+
+const HU_LETTERS_RE = /[áéíóöőúüű]/giu;
+const PATH_TOKEN_RE = /[\\/]/;
+
+// Hungarian-looking: at least 2 Hungarian-specific accented letters and at
+// least 2% of the letters. Used only to skip imperative detection.
+function looksHungarian(str) {
+  const accented = (str.match(HU_LETTERS_RE) || []).length;
+  if (accented < 2) return false;
+  const letters = (str.match(/\p{L}/gu) || []).length;
+  return letters > 0 && accented / letters >= 0.02;
+}
+
+function looksImperative(sentence) {
+  if (/^[^\p{L}\p{N}]*\p{N}/u.test(sentence)) return false;
+  const m = sentence.match(/^[^\p{L}\p{N}]*(\p{L}+)/u);
+  if (!m) return false;
+  const first = m[1].toLowerCase();
+  if (NON_IMPERATIVE_STARTERS.has(first)) return false;
+  if (first.length > 4 && first.endsWith("ing")) return false;
+  if (first.length > 3 && first.endsWith("ed")) return false;
+  if (first.length > 2 && first.endsWith("s") && !/(ss|us|is)$/.test(first)) return false;
+  return true;
+}
+
+// Prose units with their start line. Skips front matter, fenced code,
+// headings and table rows. A list item is its own unit; other lines join the
+// unit above, so hard-wrapped paragraphs stay whole.
+function steUnits(str) {
+  const lines = str.split(/\r?\n/);
+  const units = [];
+  let cur = null;
+  let i = 0;
+  let inFence = false;
+  if (lines[0] && lines[0].trim() === "---") {
+    const end = lines.findIndex((l, n) => n > 0 && l.trim() === "---");
+    if (end > 0) i = end + 1;
+  }
+  const flush = () => { if (cur) units.push(cur); cur = null; };
+  for (; i < lines.length; i++) {
+    const t = lines[i].trim();
+    if (/^(```|~~~)/.test(t)) { flush(); inFence = !inFence; continue; }
+    if (inFence) continue;
+    if (!t) { flush(); continue; }
+    if (/^#{1,6}\s/.test(t) || t.startsWith("|")) { flush(); continue; }
+    const item = t.match(/^(?:[-*+]|\d+[.)])\s+(.*)$/);
+    if (item) { flush(); cur = { line: i + 1, text: item[1] }; continue; }
+    const body = t.replace(/^>\s?/, "");
+    if (cur) cur.text += " " + body;
+    else cur = { line: i + 1, text: body };
+  }
+  flush();
+  return units;
+}
+
+// Remove what STE does not count: code spans, link targets, URLs. Also drop
+// the period of "e.g.", "i.e." and "vs." so it does not end a sentence.
+function stripTechnical(str) {
+  return str
+    .replace(/``[^`]*``|`[^`]*`/g, " ")
+    .replace(/\]\([^)]*\)/g, "]")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/\b(e\.g|i\.e|vs)\./gi, "$1");
+}
+
+// Words for the STE length: tokens with a slash (paths), an underscore
+// (identifiers) or a leading "--" (flags) do not count.
+function steWordCount(sentence) {
+  const kept = sentence
+    .split(/\s+/)
+    .filter((tok) => tok && !PATH_TOKEN_RE.test(tok) && !tok.includes("_") && !tok.startsWith("--"));
+  return countWords(kept.join(" "));
+}
+
+function scanSteSentenceLength() {
+  const examples = [];
+  let count = 0;
+  for (const unit of steUnits(text)) {
+    for (const sentence of splitSentences(stripTechnical(unit.text))) {
+      const words = steWordCount(sentence);
+      if (words <= STE_LIMIT_IMPERATIVE) continue;
+      const hungarian = looksHungarian(sentence);
+      const imperative = !hungarian && looksImperative(sentence);
+      const limit = imperative ? STE_LIMIT_IMPERATIVE : STE_LIMIT_DESCRIPTIVE;
+      if (words <= limit) continue;
+      count++;
+      if (examples.length < MAX_EXAMPLES) {
+        examples.push({
+          line: unit.line,
+          words,
+          limit,
+          kind: hungarian ? "hungarian (length only)" : imperative ? "imperative-looking" : "descriptive",
+          snippet: snippetAround(sentence, 0, Math.min(sentence.length, 60)),
+        });
+      }
+    }
+  }
+  return {
+    count,
+    limits: { imperative: STE_LIMIT_IMPERATIVE, descriptive: STE_LIMIT_DESCRIPTIVE },
+    examples,
+    note: "heuristic only: a sentence whose first word is not a determiner, pronoun, conjunction, preposition, auxiliary or a -s/-ed/-ing word counts as imperative (limit 20), else 25; Hungarian sentences always get 25. Code spans, paths (tokens with / or \\), identifiers (tokens with _) and --flags do not count. Sentences split at . ! ? followed by a space; list items are separate, wrapped lines are joined. Read each hit in context.",
+  };
+}
+
 // -------------------------------------------------------------- report ----
 
 const report = {
@@ -403,6 +545,8 @@ const report = {
   passive_voice_heuristic: PASSIVE_VOICE_HEURISTIC,
   lexical_candidates: LEXICAL_CANDIDATES,
 };
+const STE_SENTENCE_LENGTH = steMode ? scanSteSentenceLength() : null;
+if (STE_SENTENCE_LENGTH) report.ste_sentence_length = STE_SENTENCE_LENGTH;
 
 if (asJson) {
   console.log(JSON.stringify(report, null, 2));
@@ -425,6 +569,12 @@ if (asJson) {
   console.log(`paragraph_opener_repetition    : ${PARAGRAPH_OPENER_REPETITION.count} consecutive pair(s)`);
   console.log(`passive_voice_heuristic        : ${PASSIVE_VOICE_HEURISTIC.count} hit(s) (heuristic, expect false positives)`);
   console.log(`lexical_candidates             : ${LEXICAL_CANDIDATES.count} hit(s)`);
+  if (STE_SENTENCE_LENGTH) {
+    console.log(
+      `ste_sentence_length            : ${STE_SENTENCE_LENGTH.count} sentence(s) over the limit ` +
+        `(${STE_LIMIT_IMPERATIVE} imperative-looking, ${STE_LIMIT_DESCRIPTIVE} other)`,
+    );
+  }
   console.log("");
   console.log("These are candidates for judgment, not a verdict. Run with --json for locations.");
 }
