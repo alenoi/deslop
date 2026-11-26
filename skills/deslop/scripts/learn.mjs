@@ -289,18 +289,14 @@ function mergeCandidates(existing, mined, category) {
 // specifically — this is a best-effort skip-list, not the analyzer).
 function loadActivePhrases(category) {
   const active = new Set();
-  try {
-    const data = JSON.parse(readFileSync(PHRASES_PATH, "utf8"));
-    for (const e of data[category]?.entries || []) if (e.phrase) active.add(e.phrase.toLowerCase());
-  } catch (error) {
-    console.error(`learn: warning — could not read ${PHRASES_PATH} to skip already-active phrases (${error.message})`);
-  }
-  try {
-    const data = JSON.parse(readFileSync(LEARNED_PATH, "utf8"));
-    for (const e of data[category]?.entries || []) if (e.phrase) active.add(e.phrase.toLowerCase());
-  } catch (error) {
-    if (error.code !== "ENOENT") {
-      console.error(`learn: warning — could not read ${LEARNED_PATH} to skip already-active phrases (${error.message})`);
+  for (const path of [PHRASES_PATH, LEARNED_PATH]) {
+    try {
+      const data = JSON.parse(readFileSync(path, "utf8"));
+      for (const e of data[category]?.entries || []) if (e.phrase) active.add(e.phrase.toLowerCase());
+    } catch (error) {
+      // a missing learned.json is the normal fresh-clone state
+      if (path === LEARNED_PATH && error.code === "ENOENT") continue;
+      console.error(`learn: warning — could not read ${path} to skip already-active phrases (${error.message})`);
     }
   }
   return active;
@@ -310,9 +306,7 @@ function loadActivePhrases(category) {
 
 let mined;
 if (editMode) {
-  const before = readTextFile(beforePath);
-  const after = readTextFile(afterPath);
-  mined = mineEditPair(before, after);
+  mined = mineEditPair(readTextFile(beforePath), readTextFile(afterPath));
 } else {
   mined = mineFlagged(readTextFile(flaggedPath));
 }
@@ -322,7 +316,7 @@ const skippedActiveCount = mined.filter((c) => activePhrases.has(c.phrase)).leng
 mined = mined.filter((c) => !activePhrases.has(c.phrase));
 
 const existing = loadCandidates();
-const before = existing.candidates.length;
+const countBefore = existing.candidates.length;
 const { added, bumped, skippedShort } = mergeCandidates(existing, mined, category);
 writeJsonAtomic(CANDIDATES_PATH, existing);
 
@@ -331,6 +325,6 @@ console.log(
   `  new: ${added}, reinforced: ${bumped}, refused (under ${MIN_WORDS} words): ${skippedShort}, ` +
     `already active: ${skippedActiveCount}`,
 );
-console.log(`  data/candidates.json now holds ${existing.candidates.length} entries (was ${before})`);
+console.log(`  data/candidates.json now holds ${existing.candidates.length} entries (was ${countBefore})`);
 console.log(`  review with: node promote.mjs   (dry run) then --apply`);
 process.exit(0);

@@ -488,7 +488,7 @@ function steUnits(str) {
 function stripTechnical(str) {
   return str
     .replace(/``[^`]*``|`[^`]*`/g, " ")
-    .replace(/\]\([^)]*\)/g, "]")
+    .replace(/\]\([^)]{0,2000}\)/g, "]")
     .replace(/https?:\/\/\S+/g, " ")
     .replace(/\b(e\.g|i\.e|vs)\./gi, "$1");
 }
@@ -524,11 +524,14 @@ function scanSteSentenceLength() {
       if (words <= limit) continue;
       count++;
       if (examples.length < MAX_EXAMPLES) {
+        let kind = "descriptive";
+        if (hungarian) kind = "hungarian (length only)";
+        else if (imperative) kind = "imperative-looking";
         examples.push({
           line: unit.line,
           words,
           limit,
-          kind: hungarian ? "hungarian (length only)" : imperative ? "imperative-looking" : "descriptive",
+          kind,
           snippet: snippetAround(sentence, 0, Math.min(sentence.length, 60)),
         });
       }
