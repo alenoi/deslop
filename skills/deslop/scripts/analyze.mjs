@@ -502,11 +502,20 @@ function steWordCount(sentence) {
   return countWords(kept.join(" "));
 }
 
+// Like splitSentences, but a closing quote or bracket after the full stop
+// stays with its sentence.
+function steSplitSentences(str) {
+  return str
+    .split(/(?<=[.!?…]["'”’)\]]*)\s+(?=\S)/u)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function scanSteSentenceLength() {
   const examples = [];
   let count = 0;
   for (const unit of steUnits(text)) {
-    for (const sentence of splitSentences(stripTechnical(unit.text))) {
+    for (const sentence of steSplitSentences(stripTechnical(unit.text))) {
       const words = steWordCount(sentence);
       if (words <= STE_LIMIT_IMPERATIVE) continue;
       const hungarian = looksHungarian(sentence);
