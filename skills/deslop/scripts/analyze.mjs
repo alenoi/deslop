@@ -541,7 +541,7 @@ function scanSteSentenceLength() {
     count,
     limits: { imperative: STE_LIMIT_IMPERATIVE, descriptive: STE_LIMIT_DESCRIPTIVE },
     examples,
-    note: "heuristic only: a sentence whose first word is not a determiner, pronoun, conjunction, preposition, auxiliary or a -s/-ed/-ing word counts as imperative (limit 20), else 25; Hungarian sentences always get 25. Code spans, paths (tokens with / or \\), identifiers (tokens with _) and --flags do not count. Sentences split at . ! ? followed by a space; list items are separate, wrapped lines are joined. Read each hit in context.",
+    note: "heuristic only: a sentence whose first word is not a determiner, pronoun, conjunction, preposition, auxiliary or a -s/-ed/-ing word counts as imperative (limit 20), else 25; Hungarian sentences always get 25. Code spans, paths (tokens with / or \\), identifiers (tokens with _) and --flags do not count. Sentences split at . ! ? followed by a space; list items are separate, wrapped lines are joined; 'line' is the first line of the paragraph or list item, not of the sentence. Read each hit in context.",
   };
 }
 

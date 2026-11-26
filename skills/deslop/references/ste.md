@@ -43,8 +43,8 @@ Words:
 - Give each word one meaning.
 - Give each concept one word. Do not use synonyms for one term.
 - Choose the simple, common word. Write "use", not "utilize". Write "start", not "commence".
-- Do not use a noun with more than three nouns before it. Break the cluster with "of", "for" or a verb.
-- Do not use an -ing form as a noun. Write "Check the file", not "File checking".
+- Do not write a noun cluster of more than three words. Break a longer cluster with "of", "for" or a verb.
+- Do not use an -ing form as a noun. Write "Clean the filter", not "Filter cleaning".
 
 Paragraphs and lists:
 
@@ -52,11 +52,11 @@ Paragraphs and lists:
 - Put steps in a numbered list. Put parallel items in a bullet list.
 - Start each step with a verb.
 
-Exempt text: paths, identifiers, commands, flags and product names. They do not count toward word limits and keep their own spelling.
+Exempt text: paths, identifiers, commands, flags and product names keep their own spelling. In this skill they also do not count toward word limits. This is a local convention: ASD-STE100 itself counts a technical name as one word.
 
 ## How STE overrides deslop
 
-STE and deslop agree on most points: plain words, no filler, no hedging, no decoration. They conflict in four places. In these places, STE wins.
+STE and deslop agree on most points: plain words, no filler, no empty hedging, no decoration. Keep the certainty of the source: STE does not remove real uncertainty. They conflict in four places. In these places, STE wins.
 
 - **Repeated terms.** Deslop treats a repeated term as a style issue. In STE, a repeated term is the target. Do not swap it for a synonym.
 - **Sentence-length monotony.** Deslop flags runs of equal-length sentences. In STE, short sentences of similar length are correct. Do not vary them.
